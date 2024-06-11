@@ -27,6 +27,9 @@ import { Post } from "../../post/base/Post";
 import { UserFindManyArgs } from "./UserFindManyArgs";
 import { UserWhereUniqueInput } from "./UserWhereUniqueInput";
 import { UserUpdateInput } from "./UserUpdateInput";
+import { UserVerificationFindManyArgs } from "../../userVerification/base/UserVerificationFindManyArgs";
+import { UserVerification } from "../../userVerification/base/UserVerification";
+import { UserVerificationWhereUniqueInput } from "../../userVerification/base/UserVerificationWhereUniqueInput";
 
 @swagger.ApiBearerAuth()
 @common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
@@ -210,5 +213,109 @@ export class UserControllerBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/userVerifications")
+  @ApiNestedQuery(UserVerificationFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "UserVerification",
+    action: "read",
+    possession: "any",
+  })
+  async findUserVerifications(
+    @common.Req() request: Request,
+    @common.Param() params: UserWhereUniqueInput
+  ): Promise<UserVerification[]> {
+    const query = plainToClass(UserVerificationFindManyArgs, request.query);
+    const results = await this.service.findUserVerifications(params.id, {
+      ...query,
+      select: {
+        createdAt: true,
+        expiresAt: true,
+        id: true,
+        updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
+
+        verificationToken: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/userVerifications")
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "update",
+    possession: "any",
+  })
+  async connectUserVerifications(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: UserVerificationWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      userVerifications: {
+        connect: body,
+      },
+    };
+    await this.service.updateUser({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/userVerifications")
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "update",
+    possession: "any",
+  })
+  async updateUserVerifications(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: UserVerificationWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      userVerifications: {
+        set: body,
+      },
+    };
+    await this.service.updateUser({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/userVerifications")
+  @nestAccessControl.UseRoles({
+    resource: "User",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectUserVerifications(
+    @common.Param() params: UserWhereUniqueInput,
+    @common.Body() body: UserVerificationWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      userVerifications: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateUser({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 }

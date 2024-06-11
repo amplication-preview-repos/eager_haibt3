@@ -7,8 +7,10 @@ import {
   TextInput,
   PasswordInput,
   SelectArrayInput,
+  ReferenceArrayInput,
 } from "react-admin";
 
+import { UserVerificationTitle } from "../userVerification/UserVerificationTitle";
 import { ROLES_OPTIONS } from "../user/RolesOptions";
 
 export const UserCreate = (props: CreateProps): React.ReactElement => {
@@ -26,6 +28,14 @@ export const UserCreate = (props: CreateProps): React.ReactElement => {
           optionValue="value"
         />
         <TextInput label="Username" source="username" />
+        <ReferenceArrayInput
+          source="userVerifications"
+          reference="UserVerification"
+          parse={(value: any) => value && value.map((v: any) => ({ id: v }))}
+          format={(value: any) => value && value.map((v: any) => v.id)}
+        >
+          <SelectArrayInput optionText={UserVerificationTitle} />
+        </ReferenceArrayInput>
       </SimpleForm>
     </Create>
   );

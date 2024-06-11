@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { VideoModule } from "./video/video.module";
 import { PostModule } from "./post/post.module";
 import { UserModule } from "./user/user.module";
+import { UserVerificationModule } from "./userVerification/userVerification.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SecretsManagerModule } from "./providers/secrets/secretsManager.module";
@@ -24,6 +25,7 @@ import { AuthModule } from "./auth/auth.module";
     VideoModule,
     PostModule,
     UserModule,
+    UserVerificationModule,
     HealthModule,
     PrismaModule,
     SecretsManagerModule,

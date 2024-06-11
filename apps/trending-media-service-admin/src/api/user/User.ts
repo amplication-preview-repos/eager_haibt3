@@ -1,4 +1,5 @@
 import { JsonValue } from "type-fest";
+import { UserVerification } from "../userVerification/UserVerification";
 
 export type User = {
   createdAt: Date;
@@ -9,4 +10,5 @@ export type User = {
   roles: JsonValue;
   updatedAt: Date;
   username: string;
+  userVerifications?: Array<UserVerification>;
 };

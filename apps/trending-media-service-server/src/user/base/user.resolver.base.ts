@@ -26,6 +26,8 @@ import { UserFindUniqueArgs } from "./UserFindUniqueArgs";
 import { CreateUserArgs } from "./CreateUserArgs";
 import { UpdateUserArgs } from "./UpdateUserArgs";
 import { DeleteUserArgs } from "./DeleteUserArgs";
+import { UserVerificationFindManyArgs } from "../../userVerification/base/UserVerificationFindManyArgs";
+import { UserVerification } from "../../userVerification/base/UserVerification";
 import { UserService } from "../user.service";
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => User)
@@ -130,5 +132,25 @@ export class UserResolverBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => [UserVerification], { name: "userVerifications" })
+  @nestAccessControl.UseRoles({
+    resource: "UserVerification",
+    action: "read",
+    possession: "any",
+  })
+  async findUserVerifications(
+    @graphql.Parent() parent: User,
+    @graphql.Args() args: UserVerificationFindManyArgs
+  ): Promise<UserVerification[]> {
+    const results = await this.service.findUserVerifications(parent.id, args);
+
+    if (!results) {
+      return [];
+    }
+
+    return results;
   }
 }

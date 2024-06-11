@@ -19,6 +19,10 @@ import { UserList } from "./user/UserList";
 import { UserCreate } from "./user/UserCreate";
 import { UserEdit } from "./user/UserEdit";
 import { UserShow } from "./user/UserShow";
+import { UserVerificationList } from "./userVerification/UserVerificationList";
+import { UserVerificationCreate } from "./userVerification/UserVerificationCreate";
+import { UserVerificationEdit } from "./userVerification/UserVerificationEdit";
+import { UserVerificationShow } from "./userVerification/UserVerificationShow";
 import { auth0AuthProvider } from "./auth-provider/ra-auth-auth0";
 
 const history = createHistory();
@@ -69,6 +73,13 @@ const App = (): React.ReactElement => {
             edit={UserEdit}
             create={UserCreate}
             show={UserShow}
+          />
+          <Resource
+            name="UserVerification"
+            list={UserVerificationList}
+            edit={UserVerificationEdit}
+            create={UserVerificationCreate}
+            show={UserVerificationShow}
           />
         </Admin>
       </BrowserRouter>

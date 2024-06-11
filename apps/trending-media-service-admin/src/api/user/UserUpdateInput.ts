@@ -1,4 +1,5 @@
 import { InputJsonValue } from "../../types";
+import { UserVerificationUpdateManyWithoutUsersInput } from "./UserVerificationUpdateManyWithoutUsersInput";
 
 export type UserUpdateInput = {
   email?: string | null;
@@ -7,4 +8,5 @@ export type UserUpdateInput = {
   password?: string;
   roles?: InputJsonValue;
   username?: string;
+  userVerifications?: UserVerificationUpdateManyWithoutUsersInput;
 };
